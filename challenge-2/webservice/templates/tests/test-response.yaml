@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "webservice.fullname" . }}-test-response"
+  labels:
+    {{- include "webservice.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl
+      command: ['curl']
+      args: ['{{ include "webservice.fullname" . }}:{{ .Values.service.port }}']
+      # @TODO: Fix escaping to allow helm to run the command properly versus local CLI
+      # command:
+      #   - test "Hello, World\!" = "$(curl --silent --show-error --fail {{ include "webservice.fullname" . }}:{{ .Values.service.port }})"
+  restartPolicy: Never
